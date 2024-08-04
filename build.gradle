@@ -1,44 +1,67 @@
-buildscript {
-    ext.kotlin_version = '1.6.0'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
 plugins {
-    id 'com.android.application'
+    id "com.android.application"
+    id "kotlin-android"
+    id "com.google.gms.google-services"
+    id "org.jetbrains.kotlin.android" version "1.6.0" apply false
 }
 
-buildscript {
-    ext.kotlin_version = '1.6.0' // or another version >= 1.5.20
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-	
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    classpath "com.google.gms:google-services:4.4.2"
-    classpath 'com.android.tools.build:gradle:8.0.0'
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    compileSdkVersion 34
+
+    defaultConfig {
+        applicationId "com.example.app"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
 }
 
-rootProject.buildDir = '../build'
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
+flutter {
+    source '../..'
 }
 
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
-}
+dependencies {
+    implementation platform("com.google.firebase:firebase-bom:33.1.2")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
