@@ -1,9 +1,8 @@
-import 'package:buyerapp/manager/vender_or_buyer.dart';
-import 'package:buyerapp/provider/cart_provider.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
+import 'package:helloworld/provider/cart_provider.dart';
+import 'package:helloworld/views/buyers/utils/cover.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -11,7 +10,7 @@ void main() async {
   await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: "AIzaSyBWkmq0vogrCahGU4PBD1q2IFcUqqgeHCI",
-          appId: "1:153527980072:android:98bacc7d21fc5cc288251d",
+          appId: "1:153527980072:android:bff3be044c92743388251d",
           messagingSenderId: "153527980072",
           projectId: "e-rolex-99f21",
           storageBucket: "e-rolex-99f21.appspot.com"));
@@ -19,6 +18,11 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => CartProvider()),
   ], child: const MyApp()));
+}
+
+class OrderNotifier {
+  // ValueNotifier to track order count
+  static ValueNotifier<int> orderCount = ValueNotifier<int>(0);
 }
 
 class MyApp extends StatelessWidget {
@@ -37,6 +41,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         // A widget which will be started on application startup
-        home: CoverPage());
+        home: CoverPageStarter());
   }
 }
